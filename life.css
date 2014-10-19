@@ -1,0 +1,67 @@
+* {
+	margin:0px;
+	padding:0px;
+}
+
+.grid {
+	position: relative;
+	float:left;
+	margin:auto;
+}
+
+#everything {
+	width:100%;
+	margin:auto;
+}
+
+#whole {
+	margin:auto;
+	border:1px solid black;
+}
+
+#button {
+	width:200px;
+	height:30px;
+	margin:auto;
+}
+
+.btn {
+	width:25%;
+	height:100%;
+	background:#FAAB3C;
+}
+
+.btn:hover {
+	background:#BAFCEF;
+}
+
+#copyright {
+	border-top:2px solid black;
+	margin-top:25px;
+	text-align: right;
+}
+
+#copyright h5 {
+	font-size:12px;
+}
+
+#firefox_rec {
+	width:200px;
+	background:white;
+	opacity:1.0;
+	margin-left:5%;
+	position:absolute;
+}
+
+#img_firefox {
+	width:60px;
+	margin-left:10px;
+}
+
+#img_firefox:hover{
+	opacity:0.8;
+}
+
+#generation {
+	margin-left:20%;
+}
