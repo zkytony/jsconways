@@ -8,16 +8,19 @@
   </head>
   <body>
     <div id="space"></div>
+    <div id="current-array"><p></p></div>
     <div class="count" id="generation"><h3>0</h3></div>
     <div class="btn-group">
       <input type="button" value="start" class="btn" id="start-btn">
       <input type="button" value="clear" class="btn" id="clear-btn">
+      <input type="button" value="refresh" class="btn" id="refresh-btn">
     </div>
     <script src="newlife.js"></script>
     <script>
      var row = 3;
      var col = 3;
-     var lifeArray = init2DArray(row, col);
+
+     var lifeArray = initEmpty2D(row, col);
 
      var conways = new Conways(lifeArray, 'space', 'conways-game-0', 40);
      conways.draw();
@@ -32,6 +35,17 @@
        conways.run(500, 0);
      });
 
+     $('#refresh-btn').on('click', function() {
+       $('#current-array p').empty();
+       for (var i = 0; i < conways.row; i++) {
+         var rowString = ""
+         for (var j = 0; j < conways.col; j++) {
+           rowString += conways.current[i][j] + " ";
+         }
+         $('#current-array p').append(rowString + "<br>");
+       }
+     });
+
     /* $('#stop-btn').on('click', function() {
        $('#stop-btn').attr("value", "start");
        $('#stop-btn').attr("id", "start-btn");
@@ -42,6 +56,17 @@
      $('#clear-btn').on('click', function() {
        conways.pause();
      });
+
+     function initEmpty2D(r, c) {
+       arr = new Array(r);
+       for (var i = 0; i < r; i++) {
+         arr[i] = new Array(c);
+         for (var j = 0; j < c; j++) {
+           arr[i][j] = 0;
+         }
+       }
+       return arr;
+     }
     </script>
   </body>
 </html>
