@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>conway's game of life</title>
+    <link rel="stylesheet" type="text/css" href="newlife.css">
+    <script type="text/javascript"src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="space"></div>
+    <div class="count" id="generation"><h3>0</h3></div>
+    <div class="btn-group">
+      <input type="button" value="start" class="btn" id="start-btn">
+      <input type="button" value="clear" class="btn" id="clear-btn">
+    </div>
+    <script src="newlife.js"></script>
+    <script>
+     var row = 3;
+     var col = 3;
+     var lifeArray = init2DArray(row, col);
+
+     var conways = new Conways(lifeArray, 'space', 'conways-game-0', 40);
+     conways.draw();
+
+     $('.grid').on('click', function() {
+       conways.clicked($(this).attr("id"));
+     });
+
+     var myInterval;
+     var timerStarted = false;
+     $('#start-btn').on('click', function() {
+       conways.run(500, 0);
+     });
+
+    /* $('#stop-btn').on('click', function() {
+       $('#stop-btn').attr("value", "start");
+       $('#stop-btn').attr("id", "start-btn");
+       clearInterval(myInterval);
+       timerStarted = false;
+     });*/
+
+     $('#clear-btn').on('click', function() {
+       conways.pause();
+     });
+    </script>
+  </body>
+</html>
