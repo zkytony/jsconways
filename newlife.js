@@ -7,11 +7,16 @@
 
 // given an 2D array, with 0 and 1 entries, constructs a Conways object
 function Conways(initArray, parentID, id, size) {
-    this.row = initArray.length;
-    this.col = initArray[0].length;
+    this.row = 3 * initArray.length;
+    this.col = 3 * initArray[0].length;
 
-    this.current = initArray.slice();
-    this.successor = init2DArray(this.row, this.col);
+    this.rowBound = initArray.length; // where the visible part's index is
+    this.colBound = initArray[0].length;
+
+    this.current = Conways.init2DArray(this.row, this.col);
+    this.successor = Conways.init2DArray(this.row, this.col);
+
+    this.active = {}; // used for improving performance -- only care about active cells
 
     this.parentID = parentID;
     this.id = id;
@@ -19,6 +24,20 @@ function Conways(initArray, parentID, id, size) {
 
     this.running = false;
     this.interval;
+
+/*    this.row = initArray.length;
+    this.col = initArray[0].length;
+
+    this.current = initArray.slice();
+    this.successor = Conways.init2DArray(this.row, this.col);
+
+    this.parentID = parentID;
+    this.id = id;
+    this.size = size;
+
+    this.running = false;
+    this.interval;
+*/
 }
 
 // If current is true, the new life status will apply
@@ -31,14 +50,23 @@ function Conways(initArray, parentID, id, size) {
 
 
 Conways.prototype.reproduce = function() {
-    for (var i = 0; i < this.row; i++) {
+    for (id in this.active) {
+        if (this.active.hasOwnProperty(id)) {
+            var rc = id.split('-');
+            var status = this.destiny(rc[0], rc[1]);
+        }
+    }
+    this.current = this.successor.slice();
+    this.successor = Conways.init2DArray(this.row, this.col);
+/*    for (var i = 0; i < this.row; i++) {
         for (var j = 0; j < this.col; j++) {
             var status = this.destiny(i, j); // could be used for track
         }
     }
     // successor has been constructed
     this.current = this.successor.slice();
-    this.successor = init2DArray(this.row, this.col);
+    this.successor = Conways.init2DArray(this.row, this.col);
+*/
 }
 
 // returns 0 or 1 representing the life status of a grid in the next generation
@@ -183,9 +211,69 @@ Conways.prototype.clear = function() {
     this.draw();
 }
 
+// adds the possible active cell indices into the 'active' object
+Conways.prototype.addActive = function(r, c) {
+    this.active[r + '-' + c] = 0;
+    if (r == 0) {
+        if (c == 0) {
+            this.active[(r+1) + '-' + c] = 0;
+            this.active[r + '-' + (c+1)]; 
+            this.active[(r+1)(c+1)];
+        } else if (c == this.col - 1) {
+            this.active[r + '-' + (c-1)];
+            this.active[(r+1) + '-' + c];
+            this.active[(r+1) + '-' + (c-1)];
+        } else {
+            this.active[r + '-' + (c-1)]; 
+            this.active[r + '-' + (c+1)]; 
+            this.active[(r+1) + '-' + (c-1)];
+            this.active[(r+1)+ '-' + c];
+            this.active[(r+1) + '-' + (c+1)];
+        }
+    } else if (r == this.row - 1) {
+        if (c == 0) {
+            this.active[(r-1) + '-' + c]; 
+            this.active[r + '-' + (c+1)];
+            this.active[(r-1) + '-' + (c+1)];
+        } else if (c == this.col - 1) {
+            this.active[r + '-' + (c-1)];
+            this.active[(r-1) + '-' + c];
+            this.active(r-1](c-1);
+        } else {
+            this.active[r + '-' + (c-1)];
+            this.active[r + '-' + (c+1)];
+            this.active[(r-1) + '-' + (c-1)]; 
+            this.active[(r-1) + '-' + c];
+            this.active[(r-1) + '-' + (c+1);
+        }
+    } else {
+        if (c == 0) {
+            this.active[(r-1) + '-' + c];
+            this.active[(r-1) + '-' + (c+1)];
+            this.active[r + '-' + (c+1)];
+            this.active[(r+1) + '-' + (c+1)];
+            this.active[(r+1)+ '-' + c];
+        } else if (c == this.col - 1) {
+            this.active[(r-1) + '-' + (c-1)];
+            this.active[(r-1) + '-' + c];
+            this.active[r + '-' + (c-1)];
+            this.active[(r+1) + '-' + (c-1)]; 
+            this.active[(r+1)+ '-' + c];
+        } else {
+            this.active[(r-1) + '-' + (c-1)];
+            this.active[(r-1) + '-' + c];
+            this.active[(r-1) + '-' + (c+1)];
+            this.active[r + '-' + (c-1)];
+            this.active[r + '-' + (c+1)];
+            this.active[(r+1) + '-' + (c-1)];
+            this.active[(r+1)+ '-' + c]; 
+            this.active[(r+1) + '-' + (c+1);
+        }
+    }    
+}
 
-function init2DArray(r, c) {
-    arr = new Array(r);
+Conways.init2DArray = function(r, c) {
+    var arr = new Array(r);
     for (var i = 0; i < r; i++) {
         arr[i] = new Array(c);
         for (var j = 0; j < c; j++) {
