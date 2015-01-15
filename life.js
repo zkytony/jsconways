@@ -8,8 +8,8 @@
 // given an 2D array, with 0 and 1 entries, constructs a Conways object
 function Conways(initArray, parentID, id, size) {
 
-    var additionRowTop = (initArray.length <= 20 ? initArray.length : 10);
-    var additionColLeft = (initArray[0].length <= 20 ? initArray.length : 10);
+    var additionRowTop = (initArray.length <= 20 ? initArray.length : 5);
+    var additionColLeft = (initArray[0].length <= 20 ? initArray[0].length : 5);
     this.row = 2 * additionRowTop + initArray.length;
     this.col = 2 * additionColLeft + initArray[0].length;
     this.rowLength = initArray.length;
@@ -139,8 +139,8 @@ Conways.prototype.draw = function() {
             'height' : this.size - 2 + "px"
         });
         $('#' + this.id).css({
-            'width' : this.size * this.rowLength + "px",
-            'height' : this.size * this.colLength + "px"
+            'width' : this.size * this.colLength + "px",
+            'height' : this.size * this.rowLength + "px"
         });
     } else { 
         for (id in this.active) {
