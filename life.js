@@ -8,8 +8,8 @@
 // given an 2D array, with 0 and 1 entries, constructs a Conways object
 function Conways(initArray, parentID, id, size) {
 
-    var additionRowTop = (initArray.length <= 20 ? initArray.length : 5);
-    var additionColLeft = (initArray[0].length <= 20 ? initArray.length : 5);
+    var additionRowTop = (initArray.length <= 20 ? initArray.length : 10);
+    var additionColLeft = (initArray[0].length <= 20 ? initArray.length : 10);
     this.row = 2 * additionRowTop + initArray.length;
     this.col = 2 * additionColLeft + initArray[0].length;
     this.rowLength = initArray.length;
@@ -50,7 +50,8 @@ Conways.prototype.reproduce = function() {
     if (gens >= 2) {
         this.deleteOldActive(gens - 2); // clean out the old actives
     }
-    if (gens % 100 == 0) {
+    
+    if (gens >= 100 && gens % 100 == 0) {
         this.clearOutOfBound();
     }
 }
@@ -141,9 +142,7 @@ Conways.prototype.draw = function() {
             'width' : this.size * this.rowLength + "px",
             'height' : this.size * this.colLength + "px"
         });
-    } else {
-
- 
+    } else { 
         for (id in this.active) {
             var rc = id.split('-');
             r = parseInt(rc[0]);
