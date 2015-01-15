@@ -1,204 +1,325 @@
-function Grid(size, index, ri, ci, adjlist) {
-	this.rindex = ri;
-	this.cindex = ci;
+/*
+  Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+  Any live cell with two or three live neighbours lives on to the next generation.
+  Any live cell with more than three live neighbours dies, as if by overcrowding.
+  Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+ */
 
-	this.width = size;
-	this.height = size;
+// given an 2D array, with 0 and 1 entries, constructs a Conways object
+function Conways(initArray, parentID, id, size) {
 
-	this.size = size;
-	this.index = index;
+    var additionRowTop = (initArray.length <= 20 ? initArray.length : 5);
+    var additionColLeft = (initArray[0].length <= 20 ? initArray.length : 5);
+    this.row = 2 * additionRowTop + initArray.length;
+    this.col = 2 * additionColLeft + initArray[0].length;
+    this.rowLength = initArray.length;
+    this.colLength = initArray[0].length;
 
-	this.live = false;
+    this.rowBound = additionRowTop; // where the visible part's index is
+    this.colBound = additionColLeft;
 
-	// the adjlist keeps track of the indeces of the adjacent grid
-	if (adjlist != null && adjlist instanceof Array) {
-		this.adjlist = adjlist;
-	} else {
-		this.adjlist = new Array();
-	}
+    this.current = this.init2DField(this.row, this.col, initArray);
+    this.successor = this.init2DField(this.row, this.col, null);
+
+    this.active = {}; // used for improving performance -- only care about active cells
+
+    this.parentID = parentID;
+    this.id = id;
+    this.size = size;
+
+    this.running = false;
+    this.interval;
 }
 
-Grid.prototype.decideLife = function(live) {
-	this.live = live;
-};
+// If current is true, the new life status will apply
+// to the 'current' array, otherwise, will apply the 
+// new life status to successor array
 
-Grid.prototype.liveAdjacents = function() {
-	var count = 0;
-	for (var i = 0; i < this.adjlist.length; i++) {
-		if (this.adjlist[i].live) {
-			//alert("around " + this.index + ", " + this.adjlist[i].index + " is alive");
-			count++;
-		}
-	} 
-	return count;
-};
+// If current is true, the new life status will apply
+// to the 'current' array, otherwise, will apply the 
+// new life status to successor array
 
-Grid.prototype.decideState = function() {
-	//alert("in decideState: " + gridList[0][2].index + " has " + gridList[0][2].liveAdjacents());
-	if (this.liveAdjacents() < 2 || this.liveAdjacents() > 3) {
-		return false;
-	} else if (this.liveAdjacents() == 2) {
-		return this.live;
-	} else if (this.liveAdjacents() == 3) {
-		return true;
-	}
-};
-
-Grid.prototype.update = function(index) {
-	var grid = document.getElementById("grid" + index);
-	if (this.live) {
-			grid.style.background = "black";
-		} else {
-			grid.style.background = "white";
-		}
-};
-
-Grid.prototype.isadjacentTo = function(grid) {
-	if (grid instanceof Grid) {
-		if (Math.abs(this.rindex - grid.rindex) == 1) {
-			//alert("two are adj! this: " + this.index + " that: " + grid.index);
-			return Math.abs(this.cindex - grid.cindex) <= 1;
-		} else if (Math.abs(this.rindex - grid.rindex) == 0) {
-			return Math.abs(this.cindex - grid.cindex) == 1;
-		}
-	} else {
-		alert("Wrong argument: " + grid);
-		return false;
-	}
-	};
-
-	Grid.prototype.adjlistContains = function(grid) {
-		for (var i = 0; i < this.adjlist.length; i++) {
-			if (this.adjlist[i].index == grid.index) {
-				return true;
-			}
-		}
-		return false;
-	};
-
-	Grid.prototype.withThisAroundLiving = function(grid) {
-		for (var i = 0; i < this.adjlist.length; i++) {
-			if (this.adjlist[i].index == grid.index) {
-				return this.adjlist[i].live;
-			}
-		}
-		return false;
-	};
-
-	Grid.prototype.changeAroundGridToLive = function(grid) {
-		for (var i = 0; i < this.adjlist.length; i++) {
-			if (this.adjlist[i].index == grid.index) {
-				this.adjlist[i].live = true;
-			}
-		}
-	};
-
-	Grid.prototype.changeAroundGridToDie = function(grid) {
-		for (var i = 0; i < this.adjlist.length; i++) {
-			if (this.adjlist[i].index == grid.index) {
-				this.adjlist[i].live = false;
-			}
-		}
-	};
-
-	Grid.prototype.create = function(index) {
-		var grid = this; //trick
-		var newnode = document.createElement("div");
-		newnode.setAttribute("class", "grid");
-		newnode.setAttribute("id", "grid" + index);
-		newnode.style.width = this.width-2 + "px";
-		newnode.style.height = this.height-2 + "px";
-		newnode.style.border="1px solid #99CCFF";
-		document.getElementById("whole").appendChild(newnode);
-
-		newnode.addEventListener("click", function() {
-			grid.live = !grid.live;
-			grid.update(index);
-		}, false);
-
-		this.update(index);
-	};
-
-	Grid.prototype.copy = function() {
-		var result = new Grid(this.size, this.index, this.rindex, this.cindex, null);
-		result.live = this.live;
-		//result.rindex = this.ri;
-		//result.cindex = this.ci;
-		//alert("before copy");
-		result.adjlist = this.adjlist;//.clone();
-		return result;
-	};
-
-function copy(twoDlist, update) {
-	var result = new Array();
-	for (var i = 0; i < twoDlist.length;i++) {
-		var row = new Array();
-		for (var j = 0; j < twoDlist[i].length; j++) {
-			var grid = twoDlist[i][j].copy();
-			//alert("now copy: " + grid.index + " " + grid.liveAdjacents());
-			row.push(grid);
-			if (update && grid instanceof Grid) {
-				grid.update(grid.index);
-			}
-		}
-		result.push(row);
-	}
-	return result;
+var gens = 0;
+Conways.prototype.reproduce = function() {
+    for (id in this.active) {
+        var rc = id.split('-');
+        var status = this.destiny(parseInt(rc[0]), parseInt(rc[1]));
+    }
+    this.current = this.successor.slice();
+    this.successor = this.init2DField(this.row, this.col, null);
+    if (gens >= 2) {
+        this.deleteOldActive(gens - 2); // clean out the old actives
+    }
+    if (gens % 100 == 0) {
+        this.clearOutOfBound();
+    }
 }
 
-function createCanvas(gridList, width, height, size) {
-	var gridList = new Array();
-	var whole = $('#whole');
-	whole.css({
-		"width" : width + "px",
-		"height" : height + "px"
-	})
+// returns 0 or 1 representing the life status of a grid in the next generation
+// it also calls 'live()' if life status is 1, and 'die()' if it is 0
+Conways.prototype.destiny = function(r, c) {
+    var count = 0;
+    if (r == 0) {
+        if (c == 0) {
+            count = this.current[r+1][c] + this.current[r][c+1] + this.current[r+1][c+1];
+        } else if (c == this.col - 1) {
+            count = this.current[r][c-1] + this.current[r+1][c] + this.current[r+1][c-1];
+        } else {
+            count = this.current[r][c-1] + this.current[r][c+1] 
+                + this.current[r+1][c-1] + this.current[r+1][c] + this.current[r+1][c+1];
+        }
+    } else if (r == this.row - 1) {
+        if (c == 0) {
+            count = this.current[r-1][c] + this.current[r][c+1] + this.current[r-1][c+1];
+        } else if (c == this.col - 1) {
+            count = this.current[r][c-1] + this.current[r-1][c] + this.current[r-1][c-1];
+        } else {
+            count = this.current[r][c-1] + this.current[r][c+1] 
+                + this.current[r-1][c-1] + this.current[r-1][c] + this.current[r-1][c+1];
+        }
+    } else {
+        if (c == 0) {
+            count = this.current[r-1][c] + this.current[r-1][c+1] + this.current[r][c+1]
+                + this.current[r+1][c+1] + this.current[r+1][c];
+        } else if (c == this.col - 1) {
+            count = this.current[r-1][c-1] + this.current[r-1][c] + this.current[r][c-1]
+                + this.current[r+1][c-1] + this.current[r+1][c];
+        } else {
+            count = this.current[r-1][c-1] + this.current[r-1][c]
+                + this.current[r-1][c+1] + this.current[r][c-1]
+                + this.current[r+1][c] + this.current[r+1][c+1]
+                + this.current[r][c+1] + this.current[r+1][c-1];
+        }
+    }
+ 
+    var result = 0;
+    if (count < 2) {
+        result = 0;
+    } else if (count == 2 || count == 3) {
+        result = this.current[r][c];
+    } else if (count > 3) {
+        result = 0;
+    }
+    
+    if (this.current[r][c] == 0 && count == 3) {
+        result = 1;
+    }
 
-	var numrow = height / size;
-	var numcol = width / size;
-	var numgrid = numrow * numcol;
+    // change
+    if (this.current[r][c] != result) {
+        this.addActive(r, c);
+    }
 
-	var grids = new Array();
-	for (var i = 0; i < numrow; i++) {
-		var rowlist = new Array();
-		for (var j = 0; j < numcol; j++) {
-			var index = "" + i;
-			if (i < 10) {
-				index = 0 + index;
-			}
-			if (j < 10) {
-				index += "0";
-			}
-			index += j;
-			var newgrid = new Grid(size, index, i, j, null);
-			newgrid.create(index);
-			rowlist.push(newgrid);
-		}
-		gridList.push(rowlist);
-	}
-	return gridList;
+    if (result == 1) {
+        this.successor[r][c] = 1;
+    } else {
+        this.successor[r][c] = 0;
+    }
+    return result;
 }
 
-function assignAdjacents(gridList, numgrid, numcol, numrow) {
-	var ti = 0;
-	var tj = 0;
-	for (var k = 0; k < numgrid; k++) {
-		for (var i = 0; i < gridList.length; i++) {
-			for (var j = 0; j < gridList[i].length; j++) {
-				if (!(ti == i && tj == j)) {
-					if (gridList[ti][tj].isadjacentTo(gridList[i][j])) {
-						gridList[ti][tj].adjlist.push(gridList[i][j]);
-						if (gridList[ti][tj].adjlist.length >= 8) {
-							break;
-						}
-					}
-				}
-			}
-		}
-		tj++;
-		if (tj == numcol) {
-			tj = 0;
-			ti++;
-		}
-	}
+// Produces the conways game under the element with id parentID,
+// based on the current state
+Conways.prototype.draw = function() {
+    if($('#' + this.id).length == 0) {
+        var htmlString = "<div id='" + this.id + "' class='conways-board'>";
+        for (var i = 0; i < this.row; i++) {
+            for (var j = 0; j < this.col; j++) {
+                if (this.inViewPort(i, j)) {
+                    htmlString += this.create(i, j, this.current[i][j], true);
+                } else {
+                    htmlString += this.create(i, j, this.current[i][j], false);
+                }
+            }
+        }
+        $('#' + this.parentID).append(htmlString);
+        $('.grid').css({
+            'width' : this.size - 2 + "px",
+            'height' : this.size - 2 + "px"
+        });
+        $('#' + this.id).css({
+            'width' : this.size * this.rowLength + "px",
+            'height' : this.size * this.colLength + "px"
+        });
+    } else {
+
+ 
+        for (id in this.active) {
+            var rc = id.split('-');
+            r = parseInt(rc[0]);
+            c = parseInt(rc[1]);
+            if (this.current[r][c] == 1) {
+                $('#' + id).addClass("alive");
+            } else {
+                $('#' + id).removeClass("alive");
+            }
+        }
+    }
+}
+
+// Creates one grid; Returns the html string
+Conways.prototype.create = function(r, c, alive, visible) {
+    var id = r + '-' + c;
+    var htmlString = "<div id='" + id + "' class='grid";
+    if (alive) {
+        htmlString += " alive";
+    }
+    if (!visible) {
+        htmlString += " hidden";
+    }
+    htmlString += "' ></div>";
+    return htmlString;
+}
+
+// called when a grid is clicked
+Conways.prototype.clicked = function(id) {
+    var r = parseInt(id.split('-')[0]);
+    var c = parseInt(id.split('-')[1]);
+    if (this.current[r][c] == 0) {
+        this.current[r][c] = 1;
+        $('#' + id).addClass("alive");
+    } else {
+        this.current[r][c] = 0;
+        $('#' + id).removeClass("alive");
+    }
+    this.addActive(r, c); // changed because of clicking
+}
+
+// run this conway's game of life
+Conways.prototype.run = function(pace, currentGeneration) {
+    var conways = this;
+    conways.running = true;
+    conways.interval = setInterval(function() {
+        conways.reproduce();
+        conways.draw();
+        
+        currentGeneration ++;
+        $('#generation h3').html(currentGeneration);
+    }, pace);
+}
+
+Conways.prototype.pause = function() {
+    this.running = false;
+    clearInterval(this.interval);
+}
+
+Conways.prototype.clear = function() {
+    if (this.running) {
+        this.running = false;
+        clearInterval(this.interval);
+    }
+    this.current = init2DArray(this.row, this.col);
+    this.successor = init2DArray(this.row, this.col);
+    this.active = {};
+    this.draw();
+}
+
+// adds the possible active cell indices into the 'active' object
+// gens is a global variable
+Conways.prototype.addActive = function(r, c) {
+    this.active[r + '-' + c] = gens;
+    if (r == 0) {
+        if (c == 0) {
+            this.active[(r+1) + '-' + c] = gens;
+            this.active[r + '-' + (c+1)] = gens; 
+            this.active[(r+1) + '-' + (c+1)] = gens;
+        } else if (c == this.col - 1) {
+            this.active[r + '-' + (c-1)] = gens;
+            this.active[(r+1) + '-' + c] = gens;
+            this.active[(r+1) + '-' + (c-1)] = gens;
+        } else {
+            this.active[r + '-' + (c-1)] = gens; 
+            this.active[r + '-' + (c+1)] = gens; 
+            this.active[(r+1) + '-' + (c-1)] = gens;
+            this.active[(r+1)+ '-' + c] = gens;
+            this.active[(r+1) + '-' + (c+1)] = gens;
+        }
+    } else if (r == this.row - 1) {
+        if (c == 0) {
+            this.active[(r-1) + '-' + c] = gens; 
+            this.active[r + '-' + (c+1)] = gens;
+            this.active[(r-1) + '-' + (c+1)] = gens;
+        } else if (c == this.col - 1) {
+            this.active[r + '-' + (c-1)] = gens;
+            this.active[(r-1) + '-' + c] = gens;
+            this.active[(r-1) + '-' + (c-1)] = gens;
+        } else {
+            this.active[r + '-' + (c-1)] = gens;
+            this.active[r + '-' + (c+1)] = gens;
+            this.active[(r-1) + '-' + (c-1)] = gens; 
+            this.active[(r-1) + '-' + c] = gens;
+            this.active[(r-1) + '-' + (c+1)] = gens;
+        }
+    } else {
+        if (c == 0) {
+            this.active[(r-1) + '-' + c] = gens;
+            this.active[(r-1) + '-' + (c+1)] = gens;
+            this.active[r + '-' + (c+1)] = gens;
+            this.active[(r+1) + '-' + (c+1)] = gens;
+            this.active[(r+1)+ '-' + c] = gens;
+        } else if (c == this.col - 1) {
+            this.active[(r-1) + '-' + (c-1)] = gens;
+            this.active[(r-1) + '-' + c] = gens;
+            this.active[r + '-' + (c-1)] = gens;
+            this.active[(r+1) + '-' + (c-1)] = gens; 
+            this.active[(r+1)+ '-' + c] = gens;
+        } else {
+            this.active[(r-1) + '-' + (c-1)] = gens;
+            this.active[(r-1) + '-' + c] = gens;
+            this.active[(r-1) + '-' + (c+1)] = gens;
+            this.active[r + '-' + (c-1)] = gens;
+            this.active[r + '-' + (c+1)] = gens;
+            this.active[(r+1) + '-' + (c-1)] = gens;
+            this.active[(r+1)+ '-' + c] = gens; 
+            this.active[(r+1) + '-' + (c+1)] = gens;
+        }
+    }    
+}
+
+Conways.prototype.inViewPort = function(r, c) {
+    return (r >= this.rowBound && r < this.rowBound + this.rowLength)
+        && (c >= this.colBound && c < this.colBound + this.colLength);
+}
+
+// delete the older active cells with generation gens
+Conways.prototype.deleteOldActive = function(gens) {
+    for (id in this.active) {
+        if (this.active[id] == gens) {
+            delete this.active[id];
+        }
+    }
+}
+
+Conways.prototype.init2DField = function(r, c, initArray) {
+    var arr = new Array(r);
+    var m = 0;
+    var n = 0;
+    for (var i = 0; i < r; i++) {
+        arr[i] = new Array(c);
+        for (var j = 0; j < c; j++) {
+            if (initArray != null && this.inViewPort(i, j)) {
+                arr[i][j] = initArray[n][m];
+                m++;
+                if (m >= initArray[0].length) {
+                    m = 0;
+                    n++;
+                }
+            }
+            arr[i][j] = 0;
+        }
+    }
+    return arr;
+}
+
+Conways.prototype.clearOutOfBound = function() {
+    for (id in this.active) {
+        var rc = id.split('-');
+        r = parseInt(rc[0]);
+        c = parseInt(rc[1]);
+        if (!this.inViewPort(r, c)) {
+            this.successor[r][c] = 0;
+            delete this.active[id];
+        }
+    }
+   
 }
