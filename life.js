@@ -50,10 +50,10 @@ Conways.prototype.reproduce = function() {
     }
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
-    if (gens > 1) {
+    if (gens >= 1) {
         this.deleteOldActive(gens - 1); // clean out the old actives
     }
-    
+  
     if (gens >= 100 && gens % 100 == 0) {
         this.clearOutOfBound();
     }
