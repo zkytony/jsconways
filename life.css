@@ -87,3 +87,21 @@ body {
 .btn:hover {
   opacity:0.9;
 }
+
+.github-link {
+  float:left;
+  margin-top:15px;
+  margin-right:5px;
+  padding:10px;
+  background-color:#FFFF99
+}
+
+.github-link a {
+  text-decoration:none;
+  color:blue;
+  font-size:20px;
+}
+
+.github-link:hover {
+  background-color:#CCFFFF;
+}
