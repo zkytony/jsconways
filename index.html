@@ -12,6 +12,7 @@
     <div class="btn-group">
       <button class="btn start-conways" id="control-btn">Start</button>
       <button class="btn clear-conways" id="clear-btn">Clear</button>
+      <button class="btn color-conways" id="color-btn">Color</button>
     </div>
     <script src="life.js"></script>
     <script>
@@ -41,6 +42,10 @@
          $('.stop-conways').removeClass("stop-conways");
          conways.pause();
          conways.clear();
+       });
+
+       $(document).on('click', '.color-conways', function() {
+         conways.showColor = true;
        });
      });  
     </script>
