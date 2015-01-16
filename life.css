@@ -1,4 +1,4 @@
-.grid {
+.grid-conways {
     float : left;
     border : 1px solid #66CCFF;
 }
@@ -12,7 +12,6 @@
 }
 
 #space {
-    width:500px;
-    margin:auto;
-    border:2px solid black;
+    position:absolute;
+    left:18%;
 }

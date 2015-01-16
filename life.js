@@ -5,8 +5,33 @@
   Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
  */
 
+// given row and column, constructs a Conways object with empty fields
+function Conways(row, col, parentID, id, size) {
+    var additionRowTop = (row <= 20 ? row : 5);
+    var additionColLeft = (col <= 20 ? col : 5);
+    this.row = 2 * additionRowTop + row;
+    this.col = 2 * additionColLeft + col;
+    this.rowLength = row; // the length of the row that is visible
+    this.colLength = col;
+
+    this.rowBound = additionRowTop; // where the visible part's index is
+    this.colBound = additionColLeft;
+
+    this.current = this.init2DField(this.row, this.col, null);
+    this.successor = this.init2DField(this.row, this.col, null);
+
+    this.active = {}; // used for improving performance -- only care about active cells
+
+    this.parentID = parentID;
+    this.id = id;
+    this.size = size;
+
+    this.running = false;
+    this.interval;
+}
+
 // given an 2D array, with 0 and 1 entries, constructs a Conways object
-function Conways(initArray, parentID, id, size) {
+Conways.createAndFeedArray = function(initArray, parentID, id, size) {
 
     var additionRowTop = (initArray.length <= 20 ? initArray.length : 5);
     var additionColLeft = (initArray[0].length <= 20 ? initArray[0].length : 5);
@@ -134,10 +159,18 @@ Conways.prototype.draw = function() {
             }
         }
         $('#' + this.parentID).append(htmlString);
-        $('.grid').css({
+        $('.grid-conways').css({
             'width' : this.size - 2 + "px",
             'height' : this.size - 2 + "px"
         });
+
+        // add hook to grid-conways class
+        var conways = this; 
+        $('.grid-conways').on('click', function() {
+            var grid = $(this);
+            conways.clicked(grid.attr("id")); 
+        });
+
         $('#' + this.id).css({
             'width' : this.size * this.colLength + "px",
             'height' : this.size * this.rowLength + "px"
@@ -159,7 +192,7 @@ Conways.prototype.draw = function() {
 // Creates one grid; Returns the html string
 Conways.prototype.create = function(r, c, alive, visible) {
     var id = r + '-' + c;
-    var htmlString = "<div id='" + id + "' class='grid";
+    var htmlString = "<div id='" + id + "' class='grid-conways";
     if (alive) {
         htmlString += " alive";
     }
@@ -186,31 +219,34 @@ Conways.prototype.clicked = function(id) {
 
 // run this conway's game of life
 Conways.prototype.run = function(pace, currentGeneration) {
-    var conways = this;
-    conways.running = true;
-    conways.interval = setInterval(function() {
-        conways.reproduce();
-        conways.draw();
-        
-        currentGeneration ++;
-        $('#generation h3').html(currentGeneration);
-    }, pace);
+    if (!this.running) {
+        var conways = this;
+        conways.running = true;
+        conways.interval = setInterval(function() {
+            conways.reproduce();
+            conways.draw();
+            
+            currentGeneration ++;                      
+            $('.generation').html(currentGeneration);           
+        }, pace);
+    }
 }
 
 Conways.prototype.pause = function() {
-    this.running = false;
-    clearInterval(this.interval);
-}
-
-Conways.prototype.clear = function() {
     if (this.running) {
         this.running = false;
         clearInterval(this.interval);
     }
-    this.current = init2DArray(this.row, this.col);
-    this.successor = init2DArray(this.row, this.col);
-    this.active = {};
+}
+
+Conways.prototype.clear = function() {
+    this.current = this.init2DField(this.row, this.col, null);
+    this.successor = this.init2DField(this.row, this.col, null);
     this.draw();
+    this.active = {};
+
+    gens = 0;
+    $('.generation').html('0');
 }
 
 // adds the possible active cell indices into the 'active' object
@@ -320,5 +356,4 @@ Conways.prototype.clearOutOfBound = function() {
             delete this.active[id];
         }
     }
-   
 }
