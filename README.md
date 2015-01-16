@@ -15,5 +15,4 @@ For a reminder of the rules of Conway's Game of Life:
 Good luck! Try it at http://zkytony.com/codings/javascript/life
 
 -----
-Needs to improve:
-algorithm is a bit inefficient; The world cannot change size; The world is not unlimited
+Copyright Kaiyu Zheng 2014
