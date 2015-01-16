@@ -29,7 +29,6 @@ function Conways(row, col, parentID, id, size) {
 
     this.running = false;
     this.color = false;
-    this.removeColor = false;
     this.interval;
 }
 
@@ -40,7 +39,6 @@ function Conways(row, col, parentID, id, size) {
 // If current is true, the new life status will apply
 // to the 'current' array, otherwise, will apply the 
 // new life status to successor array
-
 var gens = 0;
 Conways.prototype.reproduce = function() {
     for (id in this.active) {
@@ -140,6 +138,9 @@ Conways.prototype.draw = function() {
         }
         $('#' + this.parentID).append(htmlString);
         $('.grid-conways').css({
+            'float' : 'left',
+            'border' : '1px solid #66CCFF',
+            'background-color' : 'white',
             'width' : this.size - 2 + "px",
             'height' : this.size - 2 + "px"
         });
@@ -211,24 +212,25 @@ Conways.prototype.clicked = function(id) {
 }
 
 // run this conway's game of life
-Conways.prototype.run = function(pace, currentGeneration) {
+Conways.prototype.run = function(pace) {
     if (!this.running) {
         var conways = this;
+        var removeColor = false;
+        var count = 0;
         conways.running = true;
         conways.interval = setInterval(function() {
             conways.reproduce();
             conways.draw();
             if (conways.color) {
                 conways.applyColor();
-                this.removeColor = true;
-            } else if (this.removeColor) {
+                removeColor = true;
+            } else if (removeColor) {
                 conways.removeColor();
-                alert(this.color);
-                this.removeColor = false;
+                removeColor = false;
             }
             
-            currentGeneration ++;                      
-            $('.generation').html(currentGeneration);           
+            count ++;                      
+            $('.generation').html(count);
         }, pace);
     }
 }
