@@ -1,18 +1,18 @@
 .grid-conways {
-    float : left;
-    border : 1px solid #66CCFF;
-    background-color:white;
+  float : left;
+  border : 1px solid #66CCFF;
+  background-color:white;
 }
 
 .alive {
-    background-color:black;
+  background-color:black;
 }
 
 .hidden {
-    display:none;
+  display:none;
 }
 
 #space {
-    position:absolute;
-    left:18%;
+  position:absolute;
+  left:18%;
 }

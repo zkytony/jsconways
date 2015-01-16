@@ -17,7 +17,7 @@
     <script src="life.js"></script>
     <script>
      var row = 40;
-     var col = 90;
+     var col = 75;
      
      var conways = new Conways(row, col, 'space', 'conways-game-0', 10);
      conways.draw();
@@ -44,8 +44,9 @@
          conways.clear();
        });
 
+
        $(document).on('click', '.color-conways', function() {
-         conways.showColor = true;
+           conways.color = !conways.color;
        });
      });  
     </script>

@@ -29,34 +29,7 @@ function Conways(row, col, parentID, id, size) {
 
     this.running = false;
     this.color = false;
-    this.interval;
-}
-
-// given an 2D array, with 0 and 1 entries, constructs a Conways object
-Conways.createAndFeedArray = function(initArray, parentID, id, size) {
-
-    var additionRowTop = (initArray.length <= 20 ? initArray.length : 5);
-    var additionColLeft = (initArray[0].length <= 20 ? initArray[0].length : 5);
-    this.row = 2 * additionRowTop + initArray.length;
-    this.col = 2 * additionColLeft + initArray[0].length;
-    this.rowLength = initArray.length;
-    this.colLength = initArray[0].length;
-
-    this.rowBound = additionRowTop; // where the visible part's index is
-    this.colBound = additionColLeft;
-
-    this.current = this.init2DField(this.row, this.col, initArray);
-    this.successor = this.init2DField(this.row, this.col, null);
-    this.counter = this.init2DField(this.row, this.col, initArray);
-
-    this.active = {}; // used for improving performance -- only care about active cells
-
-    this.parentID = parentID;
-    this.id = id;
-    this.size = size;
-
-    this.running = false;
-    this.color = false;
+    this.removeColor = false;
     this.interval;
 }
 
@@ -79,8 +52,8 @@ Conways.prototype.reproduce = function() {
     }
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
-    if (gens >= 2) {
-        this.deleteOldActive(gens - 2); // clean out the old actives
+    if (gens > 1) {
+        this.deleteOldActive(gens - 1); // clean out the old actives
     }
     
     if (gens >= 100 && gens % 100 == 0) {
@@ -173,15 +146,19 @@ Conways.prototype.draw = function() {
 
         // add hook to grid-conways class
         var conways = this; 
-        var dragging = false;
-        $('.grid-conways').bind('mousedown', function() {
+        var clicked = 0;
+        var dragged = false;
+        $('.grid-conways').bind('mousedown.namespace', function(e) {
+            clicked ++;
             $('.grid-conways').bind('mousemove', function(e) {
-                dragging = true;
-                conways.clicked(e.target.id);
-                $('grid-conways').unbind('mousemove');
-            });
-            $('grid-conways').bind('mouseup', function() {
-                $('grid-conways').unbind('mousemove');
+                dragged = true;
+                if (clicked == 1 && dragged) {
+                    conways.clicked(e.target.id);
+                } else if (clicked == 2) {
+                    clicked = 0;
+                    dragged = false;
+                    $('grid-conways').unbind('mousedown.namespace');
+                }
             });
         });
 
@@ -195,9 +172,9 @@ Conways.prototype.draw = function() {
             r = parseInt(rc[0]);
             c = parseInt(rc[1]);
             if (this.current[r][c] == 1) {
-                $('#' + id).addClass("alive");
+                $('#' + id).css('background-color', 'black');
             } else {
-                $('#' + id).removeClass("alive");
+                $('#' + id).css('background-color', 'white');
             }
         }
     }
@@ -208,7 +185,9 @@ Conways.prototype.create = function(r, c, alive, visible) {
     var id = r + '-' + c;
     var htmlString = "<div id='" + id + "' class='grid-conways";
     if (alive) {
-        htmlString += " alive";
+        $('#' + id).css('background-color', 'black');
+    } else {
+        $('#' + id).css('background-color', 'white');
     }
     if (!visible) {
         htmlString += " hidden";
@@ -223,10 +202,10 @@ Conways.prototype.clicked = function(id) {
     var c = parseInt(id.split('-')[1]);
     if (this.current[r][c] == 0) {
         this.current[r][c] = 1;
-        $('#' + id).addClass("alive");
+        $('#' + id).css('background-color', 'black');
     } else {
         this.current[r][c] = 0;
-        $('#' + id).removeClass("alive");
+        $('#' + id).css('background-color', 'white');
     }
     this.addActive(r, c); // changed because of clicking
 }
@@ -239,8 +218,13 @@ Conways.prototype.run = function(pace, currentGeneration) {
         conways.interval = setInterval(function() {
             conways.reproduce();
             conways.draw();
-            if (conways.showColor) {
+            if (conways.color) {
                 conways.applyColor();
+                this.removeColor = true;
+            } else if (this.removeColor) {
+                conways.removeColor();
+                alert(this.color);
+                this.removeColor = false;
             }
             
             currentGeneration ++;                      
@@ -259,6 +243,8 @@ Conways.prototype.pause = function() {
 Conways.prototype.clear = function() {
     this.current = this.init2DField(this.row, this.col, null);
     this.successor = this.init2DField(this.row, this.col, null);
+    this.counter = this.init2DField(this.row, this.col, null);
+    this.removeColor();
     this.draw();
     this.active = {};
 
@@ -376,6 +362,7 @@ Conways.prototype.clearOutOfBound = function() {
 }
 
 Conways.prototype.applyColor = function() {
+    this.color = true;
     for (id in this.active) {
         var rc = id.split('-');
         r = parseInt(rc[0]);
@@ -394,6 +381,20 @@ Conways.prototype.applyColor = function() {
             $('#' + id).css('background-color', '#FFCC00');
         } else {
             $('#' + id).css('background-color', '#FF3300');
+        }
+    }
+}
+
+Conways.prototype.removeColor = function() {
+    this.color = false;
+    for (id in this.active) {
+        var rc = id.split('-');
+        r = parseInt(rc[0]);
+        c = parseInt(rc[1]);
+        if (this.current[r][c] == 1) {
+            $('#' + id).css('background-color', 'black');
+        } else {
+            $('#' + id).css('background-color', 'white');
         }
     }
 }
