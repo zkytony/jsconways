@@ -12,7 +12,7 @@ For a reminder of the rules of Conway's Game of Life:
     Any live cell with more than three live neighbours dies, as if by overcrowding.
     Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
-Good luck! Try it at http://zkytony.com/codings/javascript/life
+Good luck! Try it at http://zkytony.com/codings/life
 
 -----
 Copyright Kaiyu Zheng 2014
