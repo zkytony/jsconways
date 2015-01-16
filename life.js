@@ -19,6 +19,7 @@ function Conways(row, col, parentID, id, size) {
 
     this.current = this.init2DField(this.row, this.col, null);
     this.successor = this.init2DField(this.row, this.col, null);
+    this.counter = this.init2DField(this.row, this.col, null);
 
     this.active = {}; // used for improving performance -- only care about active cells
 
@@ -27,6 +28,7 @@ function Conways(row, col, parentID, id, size) {
     this.size = size;
 
     this.running = false;
+    this.color = false;
     this.interval;
 }
 
@@ -45,6 +47,7 @@ Conways.createAndFeedArray = function(initArray, parentID, id, size) {
 
     this.current = this.init2DField(this.row, this.col, initArray);
     this.successor = this.init2DField(this.row, this.col, null);
+    this.counter = this.init2DField(this.row, this.col, initArray);
 
     this.active = {}; // used for improving performance -- only care about active cells
 
@@ -53,6 +56,7 @@ Conways.createAndFeedArray = function(initArray, parentID, id, size) {
     this.size = size;
 
     this.running = false;
+    this.color = false;
     this.interval;
 }
 
@@ -68,7 +72,10 @@ var gens = 0;
 Conways.prototype.reproduce = function() {
     for (id in this.active) {
         var rc = id.split('-');
-        var status = this.destiny(parseInt(rc[0]), parseInt(rc[1]));
+        r = parseInt(rc[0]);
+        c = parseInt(rc[1]);
+        var status = this.destiny(r, c);
+        this.counter[r][c] += status;
     }
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
@@ -232,6 +239,9 @@ Conways.prototype.run = function(pace, currentGeneration) {
         conways.interval = setInterval(function() {
             conways.reproduce();
             conways.draw();
+            if (conways.showColor) {
+                conways.applyColor();
+            }
             
             currentGeneration ++;                      
             $('.generation').html(currentGeneration);           
@@ -361,6 +371,29 @@ Conways.prototype.clearOutOfBound = function() {
         if (!this.inViewPort(r, c)) {
             this.successor[r][c] = 0;
             delete this.active[id];
+        }
+    }
+}
+
+Conways.prototype.applyColor = function() {
+    for (id in this.active) {
+        var rc = id.split('-');
+        r = parseInt(rc[0]);
+        c = parseInt(rc[1]);
+        if (this.current[r][c] == 1) {
+            $('#' + id).css('background-color', 'black');
+        } else if (this.counter[r][c] == 0) {
+            $('#' + id).css('background-color', 'white');            
+        } else if (this.counter[r][c] > 0 && this.counter[r][c] <= 5) {
+            $('#' + id).css('background-color', '#0000FF');
+        } else if (this.counter[r][c] > 5 && this.counter[r][c] <= 10) {
+            $('#' + id).css('background-color', '#99CCFF');
+        } else if (this.counter[r][c] > 10 && this.counter[r][c] <= 20) {
+            $('#' + id).css('background-color', '#66FF66');
+        } else if (this.counter[r][c] > 20 && this.counter[r][c] <= 30) {
+            $('#' + id).css('background-color', '#FFCC00');
+        } else {
+            $('#' + id).css('background-color', '#FF3300');
         }
     }
 }
