@@ -26,7 +26,8 @@ functions that are helpful:
 To enable the display of color representing the strength (activity of a grid),
 you need to do:
 ```javascript
-    conways.color = true;
+    conways.handleColor(); // it will automatically detect if the Game
+    is running
 ```
 In that basic example, you will need to put this line of code above `conways.run(50)`,
 so that the color setting is done before running. But you can customize this for

@@ -219,7 +219,6 @@ Conways.prototype.clicked = function(id) {
 Conways.prototype.run = function(pace) {
     if (!this.running) {
         var conways = this;
-        var removeColor = false;
         var count = 0;
         conways.running = true;
         conways.interval = setInterval(function() {
@@ -227,10 +226,8 @@ Conways.prototype.run = function(pace) {
             conways.draw();
             if (conways.color) {
                 conways.applyColor();
-                removeColor = true;
-            } else if (removeColor) {
+            } else {
                 conways.removeColor();
-                removeColor = false;
             }
             
             count ++;                      
@@ -367,6 +364,20 @@ Conways.prototype.clearOutOfBound = function() {
     }
 }
 
+// handles the color depending on whether or not the conway's game is running
+Conways.prototype.handleColor = function() {
+    if (this.running) {
+        this.color = !this.color;
+    } else {
+        if (!this.color) {
+            this.applyColor();
+        } else {
+            this.removeColor();
+        }
+    }
+}
+
+// applies the color to each grid
 Conways.prototype.applyColor = function() {
     this.color = true;
     for (id in this.active) {
@@ -391,6 +402,7 @@ Conways.prototype.applyColor = function() {
     }
 }
 
+// remove the color from each grid
 Conways.prototype.removeColor = function() {
     this.color = false;
     for (id in this.active) {
