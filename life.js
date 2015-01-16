@@ -166,9 +166,16 @@ Conways.prototype.draw = function() {
 
         // add hook to grid-conways class
         var conways = this; 
-        $('.grid-conways').on('click', function() {
-            var grid = $(this);
-            conways.clicked(grid.attr("id")); 
+        var dragging = false;
+        $('.grid-conways').bind('mousedown', function() {
+            $('.grid-conways').bind('mousemove', function(e) {
+                dragging = true;
+                conways.clicked(e.target.id);
+                $('grid-conways').unbind('mousemove');
+            });
+            $('grid-conways').bind('mouseup', function() {
+                $('grid-conways').unbind('mousemove');
+            });
         });
 
         $('#' + this.id).css({
