@@ -145,6 +145,10 @@ Conways.prototype.draw = function() {
             'height' : this.size - 2 + "px"
         });
 
+        $('.hidden').css({
+            'display' : 'none'
+        });
+
         // add hook to grid-conways class
         var conways = this; 
         var clicked = 0;

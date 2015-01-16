@@ -48,10 +48,6 @@ body {
   background-color:black;
 }
 
-.hidden {
-  display:none;
-}
-
 .conways-space {
   min-width:700px;
   width:800px;
