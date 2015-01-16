@@ -1,3 +1,49 @@
+body {
+  font-family: 'PT Sans', sans-serif;
+  background-color:#FFFFFF;
+}
+
+.info-area {
+  min-width:650px;
+  width:700px;
+  margin:auto;
+}
+
+.instruction {
+  width:400px;
+  float:left;
+  margin-right:15px;
+}
+
+.instruction p {
+  font-size:15px;
+}
+
+.control {
+  width:260px;
+  float:left;
+}
+
+.footer {
+  float:left;
+}
+
+.footer p {
+  font-size:23px;
+}
+
+.count {
+  width:200px;
+}
+
+.count p {
+  font-size:18px;
+}
+
+.count h3 {
+  font-size:22px;
+}
+
 .alive {
   background-color:black;
 }
@@ -6,7 +52,38 @@
   display:none;
 }
 
-#space {
-  position:absolute;
-  left:18%;
+.conways-space {
+  min-width:700px;
+  width:800px;
+  margin:auto;
+}
+
+.btn {
+  width:70px;
+  height:40px;
+  border-radius: 10px;
+}
+
+.start-conways {
+  background-color:#0066FF;
+  color:white;
+}
+
+.stop-conways {
+  background-color:#FFCB30;
+  color:white;
+}
+
+.clear-conways {
+  background-color:#33CC33;
+  color:white;
+}
+
+.color-conways {
+  background-color:#999966;
+  color:white;
+}
+
+.btn:hover {
+  opacity:0.9;
 }
