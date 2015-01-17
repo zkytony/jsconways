@@ -57,7 +57,7 @@
          $(this).html("Stop");
          $(this).addClass("stop-conways");
          $(this).removeClass("start-conways");
-         conways.run(50, 0);
+         conways.run(50);
        });
 
        $(document).on('click', '.clear-conways', function() {
@@ -70,7 +70,7 @@
 
 
        $(document).on('click', '.color-conways', function() {
-           conways.handleColor();
+           conways.handleColor(true);
        });
      });  
     </script>
