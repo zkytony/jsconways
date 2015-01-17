@@ -3,6 +3,8 @@
   Any live cell with two or three live neighbours lives on to the next generation.
   Any live cell with more than three live neighbours dies, as if by overcrowding.
   Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+  Copyright 2014 Kaiyu Zheng
  */
 
 // given row and column, constructs a Conways object with empty fields
@@ -161,6 +163,7 @@ Conways.prototype.draw = function() {
                 $('.grid-conways').bind('mouseenter.namespace', function(e) {
                     conways.clicked(e.target.id);
                 });
+                return false;
             });
 
         $('#' + this.id).css({
