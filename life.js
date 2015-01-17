@@ -52,13 +52,7 @@ Conways.prototype.reproduce = function() {
     }
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
-    if (gens >= 1) {
-        this.deleteOldActive(gens - 1); // clean out the old actives
-    }
-  
-    if (gens >= 100 && gens % 100 == 0) {
-        this.clearOutOfBound();
-    }
+    gens ++;
 }
 
 // returns 0 or 1 representing the life status of a grid in the next generation
@@ -215,7 +209,6 @@ Conways.prototype.clicked = function(id) {
 }
 
 // run this conway's game of life
-var count = 0;
 Conways.prototype.run = function(pace) {
     if (!this.running) {
         var conways = this;
@@ -228,9 +221,8 @@ Conways.prototype.run = function(pace) {
             } else {
                 conways.removeColor();
             }
-            
-            count ++;                      
-            $('.generation').html(count);
+                        
+            $('.generation').html(gens);
         }, pace);
     }
 }
