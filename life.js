@@ -111,8 +111,8 @@ Conways.prototype.destiny = function(r, c) {
         result = 1;
     }
 
-    // keep the live ones active
-    if (this.current[r][c] == 1) {
+    // keep the live ones active; or when changed, add active
+    if (this.current[r][c] == 1 || this.current[r][c] != result) {
         this.addActive(r, c);
     }
 
