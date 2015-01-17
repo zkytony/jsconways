@@ -52,6 +52,10 @@ Conways.prototype.reproduce = function() {
     }
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
+    
+    if (gens >= 1) {
+        this.deleteOldActive(gens - 1);
+    }
     gens ++;
 }
 
@@ -165,10 +169,11 @@ Conways.prototype.draw = function() {
             'height' : this.size * this.rowLength + "px"
         });
     } else { 
-        for (id in this.active) {
-            var rc = id.split('-');
+        for (key in this.active) {
+            var rc = key.split('-');
             r = parseInt(rc[0]);
             c = parseInt(rc[1]);
+            id = r + '-' + c;
             if (this.current[r][c] == 1) {
                 $('#' + id).css('background-color', 'black');
             } else {
@@ -211,6 +216,7 @@ Conways.prototype.clicked = function(id) {
 // run this conway's game of life
 Conways.prototype.run = function(pace) {
     if (!this.running) {
+        if (gens == 0) { gens = 1; }
         var conways = this;
         conways.running = true;
         conways.interval = setInterval(function() {
@@ -249,61 +255,61 @@ Conways.prototype.clear = function() {
 // adds the possible active cell indices into the 'active' object
 // gens is a global variable
 Conways.prototype.addActive = function(r, c) {
-    this.active[r + '-' + c] = gens;
+    this.active[r + '-' + c + '-' + gens] = gens;
     if (r == 0) {
         if (c == 0) {
-            this.active[(r+1) + '-' + c] = gens;
-            this.active[r + '-' + (c+1)] = gens; 
-            this.active[(r+1) + '-' + (c+1)] = gens;
+            this.active[(r+1) + '-' + c + '-' + gens] = gens;
+            this.active[r + '-' + (c+1) + '-' + gens] = gens; 
+            this.active[(r+1) + '-' + (c+1) + '-' + gens] = gens;
         } else if (c == this.col - 1) {
-            this.active[r + '-' + (c-1)] = gens;
-            this.active[(r+1) + '-' + c] = gens;
-            this.active[(r+1) + '-' + (c-1)] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r+1) + '-' + c + '-' + gens] = gens;
+            this.active[(r+1) + '-' + (c-1) + '-' + gens] = gens;
         } else {
-            this.active[r + '-' + (c-1)] = gens; 
-            this.active[r + '-' + (c+1)] = gens; 
-            this.active[(r+1) + '-' + (c-1)] = gens;
-            this.active[(r+1)+ '-' + c] = gens;
-            this.active[(r+1) + '-' + (c+1)] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens; 
+            this.active[r + '-' + (c+1) + '-' + gens] = gens; 
+            this.active[(r+1) + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r+1)+ '-' + c + '-' + gens] = gens;
+            this.active[(r+1) + '-' + (c+1) + '-' + gens] = gens;
         }
     } else if (r == this.row - 1) {
         if (c == 0) {
-            this.active[(r-1) + '-' + c] = gens; 
-            this.active[r + '-' + (c+1)] = gens;
-            this.active[(r-1) + '-' + (c+1)] = gens;
+            this.active[(r-1) + '-' + c + '-' + gens] = gens; 
+            this.active[r + '-' + (c+1) + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c+1) + '-' + gens] = gens;
         } else if (c == this.col - 1) {
-            this.active[r + '-' + (c-1)] = gens;
-            this.active[(r-1) + '-' + c] = gens;
-            this.active[(r-1) + '-' + (c-1)] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r-1) + '-' + c + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c-1) + '-' + gens] = gens;
         } else {
-            this.active[r + '-' + (c-1)] = gens;
-            this.active[r + '-' + (c+1)] = gens;
-            this.active[(r-1) + '-' + (c-1)] = gens; 
-            this.active[(r-1) + '-' + c] = gens;
-            this.active[(r-1) + '-' + (c+1)] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens;
+            this.active[r + '-' + (c+1) + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c-1) + '-' + gens] = gens; 
+            this.active[(r-1) + '-' + c + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c+1) + '-' + gens] = gens;
         }
     } else {
         if (c == 0) {
-            this.active[(r-1) + '-' + c] = gens;
-            this.active[(r-1) + '-' + (c+1)] = gens;
-            this.active[r + '-' + (c+1)] = gens;
-            this.active[(r+1) + '-' + (c+1)] = gens;
-            this.active[(r+1)+ '-' + c] = gens;
+            this.active[(r-1) + '-' + c + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c+1) + '-' + gens] = gens;
+            this.active[r + '-' + (c+1) + '-' + gens] = gens;
+            this.active[(r+1) + '-' + (c+1) + '-' + gens] = gens;
+            this.active[(r+1)+ '-' + c + '-' + gens] = gens;
         } else if (c == this.col - 1) {
-            this.active[(r-1) + '-' + (c-1)] = gens;
-            this.active[(r-1) + '-' + c] = gens;
-            this.active[r + '-' + (c-1)] = gens;
-            this.active[(r+1) + '-' + (c-1)] = gens; 
-            this.active[(r+1)+ '-' + c] = gens;
+            this.active[(r-1) + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r-1) + '-' + c + '-' + gens] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r+1) + '-' + (c-1) + '-' + gens] = gens; 
+            this.active[(r+1)+ '-' + c + '-' + gens] = gens;
         } else {
-            this.active[(r-1) + '-' + (c-1)] = gens;
-            this.active[(r-1) + '-' + c] = gens;
-            this.active[(r-1) + '-' + (c+1)] = gens;
-            this.active[r + '-' + (c-1)] = gens;
-            this.active[r + '-' + (c+1)] = gens;
-            this.active[(r+1) + '-' + (c-1)] = gens;
-            this.active[(r+1)+ '-' + c] = gens; 
-            this.active[(r+1) + '-' + (c+1)] = gens;
+            this.active[(r-1) + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r-1) + '-' + c + '-' + gens] = gens;
+            this.active[(r-1) + '-' + (c+1) + '-' + gens] = gens;
+            this.active[r + '-' + (c-1) + '-' + gens] = gens;
+            this.active[r + '-' + (c+1) + '-' + gens] = gens;
+            this.active[(r+1) + '-' + (c-1) + '-' + gens] = gens;
+            this.active[(r+1)+ '-' + c + '-' + gens] = gens; 
+            this.active[(r+1) + '-' + (c+1) + '-' + gens] = gens;
         }
     }    
 }
@@ -371,10 +377,11 @@ Conways.prototype.handleColor = function() {
 // applies the color to each grid
 Conways.prototype.applyColor = function() {
     this.color = true;
-    for (id in this.active) {
-        var rc = id.split('-');
+    for (key in this.active) {
+        var rc = key.split('-');
         r = parseInt(rc[0]);
         c = parseInt(rc[1]);
+        id = r + '-' + c;
         if (this.current[r][c] == 1) {
             $('#' + id).css('background-color', 'black');
         } else if (this.counter[r][c] == 0) {
@@ -396,10 +403,11 @@ Conways.prototype.applyColor = function() {
 // remove the color from each grid
 Conways.prototype.removeColor = function() {
     this.color = false;
-    for (id in this.active) {
-        var rc = id.split('-');
+    for (key in this.active) {
+        var rc = key.split('-');
         r = parseInt(rc[0]);
         c = parseInt(rc[1]);
+        id = r + '-' + c;
         if (this.current[r][c] == 1) {
             $('#' + id).css('background-color', 'black');
         } else {
