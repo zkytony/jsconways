@@ -53,8 +53,8 @@ Conways.prototype.reproduce = function() {
     this.current = this.successor.slice();
     this.successor = this.init2DField(this.row, this.col, null);
     
-    if (gens >= 1) {
-        this.deleteOldActive(gens - 1);
+    if (gens >= 2) {
+        this.deleteOldActive(gens - 2);
     }
     gens ++;
 }
@@ -109,8 +109,8 @@ Conways.prototype.destiny = function(r, c) {
         result = 1;
     }
 
-    // change
-    if (this.current[r][c] != result) {
+    // keep the live ones active
+    if (this.current[r][c] == 1) {
         this.addActive(r, c);
     }
 
