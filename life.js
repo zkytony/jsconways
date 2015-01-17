@@ -153,19 +153,15 @@ Conways.prototype.draw = function() {
         var conways = this; 
         var clicked = 0;
         var dragged = false;
-        $('.grid-conways').bind('mousedown.namespace', function(e) {
-            clicked ++;
-            $('.grid-conways').bind('mousemove', function(e) {
-                dragged = true;
-                if (clicked == 1 && dragged) {
+        $('.grid-conways')
+            .mouseup(function() {
+                $('.grid-conways').unbind('mouseenter.namespace');
+            })
+            .mousedown(function() {
+                $('.grid-conways').bind('mouseenter.namespace', function(e) {
                     conways.clicked(e.target.id);
-                } else if (clicked == 2) {
-                    clicked = 0;
-                    dragged = false;
-                    $('grid-conways').unbind('mousedown.namespace');
-                }
+                });
             });
-        });
 
         $('#' + this.id).css({
             'width' : this.size * this.colLength + "px",
