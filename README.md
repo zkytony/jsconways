@@ -26,12 +26,15 @@ functions that are helpful:
 To enable the display of color representing the strength (activity of a grid),
 you need to do:
 ```javascript
-    conways.handleColor(); // it will automatically detect if the Game
-    is running
+    conways.handleColor(true); // true means the color handling is triggered from clicking a button
 ```
 In that basic example, you will need to put this line of code above `conways.run(50)`,
 so that the color setting is done before running. But you can customize this for
 your own purposes.
+
+Algorithm:
+
+This version of Life improves the performance by only caring about the 'active' cells - ones that are alive and surrounds alive.
 
 For a reminder of the rules of Conway's Game of Life:
 ```
