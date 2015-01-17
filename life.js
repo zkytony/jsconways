@@ -216,10 +216,10 @@ Conways.prototype.clicked = function(id) {
 }
 
 // run this conway's game of life
+var count = 0;
 Conways.prototype.run = function(pace) {
     if (!this.running) {
         var conways = this;
-        var count = 0;
         conways.running = true;
         conways.interval = setInterval(function() {
             conways.reproduce();
