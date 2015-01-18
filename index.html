@@ -25,9 +25,10 @@
         <div class="control">
           <div class="count"><p>Generation:<h3 class="generation">0</h3></p></div>
           <div class="btn-group">
-            <button class="btn start-conways" id="control-btn">Start</button>
-            <button class="btn clear-conways" id="clear-btn">Clear</button>
-            <button class="btn color-conways" id="color-btn">Strength</button>
+            <button class="btn start-conways" id="control-btn" title="Start Life">Start</button>
+            <button class="btn clear-conways" id="clear-btn" title="Clear the world">Clear</button>
+            <button class="btn color-conways" id="color-btn" title="See cell strength">Strength</button>
+            <button class="btn pattern-conways" id="pattern-gun-btn" title="Gosper Glider Gun">Gun</button>
           </div>
         </div>
         <div class="github-link">
@@ -68,9 +69,22 @@
          conways.clear();
        });
 
-
        $(document).on('click', '.color-conways', function() {
-           conways.handleColor(true);
+         conways.handleColor(true);
+       });
+
+       $(document).on('click', '.pattern-conways', function() {
+         var coords = 
+         [
+           [1, 5],[1, 6],[2, 5],[2, 6],[11, 5],
+           [11, 6],[11, 7],[12, 4],[12, 8],[13, 3],
+           [13, 9],[14, 3],[14, 9],[15, 6],[16, 4],
+           [16, 8],[17, 5],[17, 6],[17, 7],[18, 6],
+           [21, 3],[21, 4],[21, 5],[22, 3],[22, 4],
+           [22, 5],[23, 2],[23, 6],[25, 1],[25, 2],
+           [25, 6],[25, 7],[35, 3],[35, 4],[36, 3],[36, 4]
+         ];
+         conways.feedPattern(coords);
        });
      });  
     </script>

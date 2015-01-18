@@ -399,18 +399,6 @@ Conways.prototype.init2DField = function(r, c, initArray) {
     return arr;
 }
 
-Conways.prototype.clearOutOfBound = function() {
-    for (id in this.active) {
-        var rc = id.split('-');
-        r = parseInt(rc[0]);
-        c = parseInt(rc[1]);
-        if (!this.inViewPort(r, c)) {
-            this.successor[r][c] = 0;
-            delete this.active[id];
-        }
-    }
-}
-
 // handles the color depending on whether or not the conway's game is running
 Conways.prototype.handleColor = function(clicked) {
     if (clicked) {
@@ -463,4 +451,20 @@ Conways.prototype.removeColor = function() {
             $('#' + id).css('background-color', 'white');
         }
     }
+}
+
+// This function takes an array of coordinates, namely,
+// a 2D array, with rows = number of coordinates,
+// and cols = 2, the coordinate number. It will cause the
+// conways to clear the current patterns, and display
+// this pattern
+Conways.prototype.feedPattern = function(coordsArray) {
+    this.clear(); // clear all current pattern
+    for (var i = 0; i < coordsArray.length; i++) {
+        var x = coordsArray[i][0] + this.colBound; // x is col index
+        var y = coordsArray[i][1] + this.rowBound; // y is row index
+        this.current[y][x] = 1;
+        this.addActive(y, x);
+    }
+    this.draw();
 }

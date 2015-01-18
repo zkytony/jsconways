@@ -55,9 +55,10 @@ body {
 }
 
 .btn {
-  width:70px;
+  width:65px;
   height:40px;
   border-radius: 10px;
+  border:none;
 }
 
 .start-conways {
@@ -80,8 +81,22 @@ body {
   color:white;
 }
 
+.pattern-conways {
+  background-color:#E7E9EA;
+  border:1px solid #3399FF;
+}
+
+.pattern-conways:hover {
+  background-color:#D9DCDC;
+}
+
 .btn:hover {
   opacity:0.9;
+}
+
+.btn-group {
+  width:300px;
+  min-width:250px;
 }
 
 .github-link {
