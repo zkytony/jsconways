@@ -27,7 +27,7 @@
           <div class="btn-group">
             <button class="btn start-conways" id="control-btn" title="Start Life">Start</button>
             <button class="btn clear-conways" id="clear-btn" title="Clear the world">Clear</button>
-            <button class="btn color-conways" id="color-btn" title="See cell strength">Strength</button>
+            <button class="btn color-conways color-off" id="color-btn" title="See cell strength">Strength</button>
             <button class="btn pattern-conways" id="pattern-gun-btn" title="Gosper Glider Gun">Gun</button>
           </div>
         </div>
@@ -71,6 +71,11 @@
 
        $(document).on('click', '.color-conways', function() {
          conways.handleColor(true);
+         if (conways.putColor) {
+           $(this).addClass("color-on");
+         } else {
+           $(this).removeClass("color-on");
+         }
        });
 
        $(document).on('click', '.pattern-conways', function() {

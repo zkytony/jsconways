@@ -153,8 +153,6 @@ Conways.prototype.draw = function() {
 
         // add hook to grid-conways class
         var conways = this; 
-        var clicked = 0;
-        var dragged = false;
         $('.grid-conways')
             .mouseup(function() {
                 $('.grid-conways').unbind('mouseenter.namespace');

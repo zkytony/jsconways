@@ -81,6 +81,10 @@ body {
   color:white;
 }
 
+.color-on {
+  background-color:#9933FF;
+}
+
 .pattern-conways {
   background-color:#E7E9EA;
   border:1px solid #3399FF;
