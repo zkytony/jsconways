@@ -32,6 +32,25 @@ In that basic example, you will need to put this line of code above `conways.run
 so that the color setting is done before running. But you can customize this for
 your own purposes.
 
+You can also make a pattern, by creating an array of coordinates, namely, a 2D Array that has row = coordinates,
+and col = 2, which is just x and y. For example, for the *Gosper's Glider Gun*,
+```javascript
+      var coords =
+     [
+          [1, 5],[1, 6],[2, 5],[2, 6],[11, 5],
+          [11, 6],[11, 7],[12, 4],[12, 8],[13, 3],
+          [13, 9],[14, 3],[14, 9],[15, 6],[16, 4],
+          [16, 8],[17, 5],[17, 6],[17, 7],[18, 6],
+          [21, 3],[21, 4],[21, 5],[22, 3],[22, 4],
+          [22, 5],[23, 2],[23, 6],[25, 1],[25, 2],
+          [25, 6],[25, 7],[35, 3],[35, 4],[36, 3],[36, 4]
+     ];
+```
+Then, you can feed this pattern to the current Conways object:
+```javascript
+     conways.feedPattern(coords); // the current pattern will be replaced. It will call draw() itself
+```
+
 Algorithm:
 
 This version of Life improves the performance by only caring about the 'active' cells - ones that are alive and surrounds alive.
@@ -43,6 +62,8 @@ For a reminder of the rules of Conway's Game of Life:
     Any live cell with more than three live neighbours dies, as if by overcrowding.
     Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 ```
+
+Good Luck!
 
 -----
 Copyright 2014 Kaiyu Zheng
