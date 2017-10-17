@@ -3,7 +3,7 @@ jsconways
 
 javascript object-oriented implementation of conways game of life
 
-Try it at http://zkytony.com/codings/life
+Try it at http://kaiyuzheng.me/dump/codings/life/
 
 Basic example:
 Suppose you have a `div` tag with id `my-conways-space`, with which you 
